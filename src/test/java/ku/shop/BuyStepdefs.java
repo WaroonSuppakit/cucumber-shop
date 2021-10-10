@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BuyStepdefs {
 
@@ -24,9 +25,16 @@ public class BuyStepdefs {
     }
 
     @When("I buy {string} with quantity {int}")
-    public void i_buy_with_quantity(String name, int quantity) {
+    public void i_buy_with_quantity(String name, int quantity) throws NotEnoughProductException{
         Product prod = catalog.getProduct(name);
         order.addItem(prod, quantity);
+    }
+
+    @When("I buy {string} with more than quantity {int}")
+    public void i_buy_more_than_quantity(String name, int quantity) throws NotEnoughProductException{
+        Product prod = catalog.getProduct(name);
+        assertThrows(NotEnoughProductException.class,
+                () -> order.addItem(prod, quantity));
     }
 
     @Then("total should be {float}")
